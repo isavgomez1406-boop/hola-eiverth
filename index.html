@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hola, Eiverth</title>
+<style>
+:root{
+  --bg:#e9f3f2; --surface:#ffffff; --ink:#0b3a42; --muted:#4d6f75; --line:#bfdcd9;
+  --accent:#d6293e; --accent-ink:#ffffff; --ok:#1c7c54; --okbg:#d8f1e4; --bad:#b3261e; --badbg:#fbe0dd;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#071b20; --surface:#0d2b32; --ink:#e3f3f1; --muted:#9bc0bf; --line:#1d4a52;
+    --accent:#ff5468; --accent-ink:#2a0408; --ok:#6fdca6; --okbg:#10382a; --bad:#ff9a92; --badbg:#3d1512;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#071b20; --surface:#0d2b32; --ink:#e3f3f1; --muted:#9bc0bf; --line:#1d4a52;
+  --accent:#ff5468; --accent-ink:#2a0408; --ok:#6fdca6; --okbg:#10382a; --bad:#ff9a92; --badbg:#3d1512;
+  color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:28px 20px 56px}
+.hero{padding:36px 0 8px}
+h1{font:700 clamp(2.6rem,9vw,4.6rem)/1.02 Georgia,"Times New Roman",serif;margin:0 0 14px;letter-spacing:-.02em}
+.sub{font-size:clamp(1.15rem,3.4vw,1.5rem);color:var(--muted);margin:0 0 26px;max-width:34ch;line-height:1.4}
+.sub b{color:var(--ink);font-weight:600}
+.check{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 20px 18px;margin-bottom:14px}
+.check h2{font:700 1.3rem/1.25 Georgia,serif;margin:0 0 12px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:999px;padding:10px 18px;min-height:44px;cursor:pointer;transition:border-color .15s,background .15s}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.chip:focus-visible,.opt:focus-visible,.theme:focus-visible,.btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.reply{margin:14px 0 0;color:var(--muted);min-height:1.6em}
+.monitor{margin:30px 0 40px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px 8px;overflow:hidden}
+.monitor-top{display:flex;justify-content:space-between;align-items:center;font-size:.85rem;color:var(--muted)}
+.bpm{display:flex;align-items:center;gap:8px;font-weight:600;color:var(--accent)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--accent);animation:beat 1s infinite}
+@keyframes beat{0%,100%{transform:scale(1);opacity:1}15%{transform:scale(1.6)}30%{transform:scale(1)}}
+svg.ecg{display:block;width:100%;height:90px}
+.trace{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 3.2s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.grid{stroke:var(--line);stroke-width:1}
+.q{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:14px;padding:26px 22px}
+.q h2{font:700 1.5rem/1.25 Georgia,serif;margin:0 0 4px}
+.prog{display:flex;justify-content:space-between;color:var(--muted);font-size:.9rem;margin-bottom:12px}
+.bar{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:18px}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.q p.lead{margin:0 0 18px;font-size:1.1rem;font-weight:600}
+.opts{display:grid;gap:10px}
+.opt{font:inherit;text-align:left;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:14px 16px;cursor:pointer;min-height:48px;transition:border-color .15s,background .15s}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt.ok{background:var(--okbg);border-color:var(--ok);color:var(--ok);font-weight:600}
+.opt.bad{background:var(--badbg);border-color:var(--bad);color:var(--bad)}
+.fb{margin-top:18px;padding:16px;border-radius:10px;background:var(--bg);border:1px dashed var(--line);display:none}
+.fb.show{display:block}
+.fb strong{display:block;margin-bottom:4px}
+.btn{margin-top:12px;font:inherit;background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:10px 22px;cursor:pointer;font-weight:600}
+.score{font:700 3rem/1 Georgia,serif;margin:6px 0 10px}
+.theme{position:fixed;right:14px;top:calc(env(safe-area-inset-top,0px) + 12px);font:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:.85rem;z-index:5}
+footer{margin-top:36px;text-align:center;color:var(--muted);font-size:.9rem}
+@media (prefers-reduced-motion: reduce){.trace{animation:none;stroke-dashoffset:0}.dot,.bar i{animation:none;transition:none}}
+</style>
+</head>
+<body>
+<button class="theme" id="theme" type="button" aria-label="Cambiar tema">Claro / Oscuro</button>
+<main>
+  <section class="hero">
+    <h1>Hola, Eiverth</h1>
+    <p class="sub"><b>¿Cómo estás hoy?</b> ¿Cómo te ha ido en clases? Cuéntame un poco antes de empezar.</p>
+
+    <div class="check" aria-live="polite">
+      <h2>¿Cómo amaneciste hoy?</h2>
+      <div class="chips" data-group="mood">
+        <button class="chip" type="button" data-r="¡Qué bueno! Aprovecha esa energía para estudiar con ganas.">Con toda la energía</button>
+        <button class="chip" type="button" data-r="Un día tranquilo también vale. Paso a paso se llega lejos.">Bien, tranquilo</button>
+        <button class="chip" type="button" data-r="Descansa cuando puedas y toma agua. Dormir bien también es parte de estudiar medicina.">Cansado</button>
+        <button class="chip" type="button" data-r="Respira hondo. Divide lo que tienes pendiente en partes pequeñas y empieza por una.">Estresado</button>
+      </div>
+      <p class="reply" id="r-mood"></p>
+    </div>
+
+    <div class="check" aria-live="polite">
+      <h2>¿Cómo te ha ido en clases?</h2>
+      <div class="chips" data-group="clases">
+        <button class="chip" type="button" data-r="¡Excelente! Eso se celebra.">Muy bien</button>
+        <button class="chip" type="button" data-r="Vas por buen camino. Repasa lo de hoy antes de dormir y se te queda mejor.">Normal</button>
+        <button class="chip" type="button" data-r="Pasa a todos. Pregunta lo que no entendiste y ya está, tú puedes.">Me ha costado</button>
+      </div>
+      <p class="reply" id="r-clases"></p>
+    </div>
+
+    <div class="check" aria-live="polite">
+      <h2>¿Hoy te toca entrenar?</h2>
+      <div class="chips" data-group="gym">
+        <button class="chip" type="button" data-r="¡Dale con todo! Calienta bien, hidrátate y cuida la técnica.">Sí, hoy toca</button>
+        <button class="chip" type="button" data-r="El descanso es parte del entrenamiento. Los músculos crecen mientras descansas.">Hoy descanso</button>
+        <button class="chip" type="button" data-r="No pasa nada. Aunque sea una caminata corta de 15 minutos suma.">No tuve tiempo</button>
+      </div>
+      <p class="reply" id="r-gym"></p>
+    </div>
+  </section>
+
+  <div class="monitor" aria-hidden="true">
+    <div class="monitor-top"><span>Ritmo sinusal</span><span class="bpm"><span class="dot"></span>72 lat/min</span></div>
+    <svg class="ecg" viewBox="0 0 800 90" preserveAspectRatio="none">
+      <g class="grid"><line x1="0" y1="45" x2="800" y2="45"/><line x1="200" y1="0" x2="200" y2="90"/><line x1="400" y1="0" x2="400" y2="90"/><line x1="600" y1="0" x2="600" y2="90"/></g>
+      <path class="trace" d="M0 50 H60 l8-8 8 8 H120 l8 6 14-48 16 66 8-24 H230 l10-14 14 14 H400 l8-8 8 8 H460 l8 6 14-48 16 66 8-24 H570 l10-14 14 14 H800"/>
+    </svg>
+  </div>
+
+  <section class="q" aria-live="polite">
+    <h2>Preguntas de medicina para ti</h2>
+    <div class="prog"><span id="pn"></span><span id="ps"></span></div>
+    <div class="bar"><i id="pb"></i></div>
+    <div id="qbody"></div>
+  </section>
+
+  <footer>Que tengas un excelente día de estudio, futuro doctor.</footer>
+</main>
+<script>
+(function(){
+  document.querySelectorAll(".chips").forEach(function(g){
+    var out=document.getElementById("r-"+g.getAttribute("data-group"));
+    g.querySelectorAll(".chip").forEach(function(c){
+      c.setAttribute("aria-pressed","false");
+      c.addEventListener("click",function(){
+        g.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed","false")});
+        c.setAttribute("aria-pressed","true");
+        out.textContent=c.getAttribute("data-r");
+      });
+    });
+  });
+
+  var Q=[
+    {q:"¿Qué estructura del corazón funciona como el marcapasos natural?",o:["Nodo sinoauricular","Nodo auriculoventricular","Haz de His","Fibras de Purkinje"],a:0,e:"El nodo sinoauricular, en la aurícula derecha, genera el impulso que inicia cada latido, a unos 60–100 por minuto en reposo."},
+    {q:"¿Qué célula de la sangre transporta el oxígeno?",o:["Leucocito","Eritrocito (glóbulo rojo)","Plaqueta","Linfocito"],a:1,e:"Los eritrocitos contienen hemoglobina, la proteína que une el oxígeno en los pulmones y lo entrega a los tejidos."},
+    {q:"¿Cuál es el hueso más largo del cuerpo humano?",o:["Húmero","Tibia","Fémur","Peroné"],a:2,e:"El fémur, en el muslo, es el hueso más largo y también el más resistente."},
+    {q:"¿Qué órgano produce la insulina?",o:["Hígado","Páncreas","Riñón","Bazo"],a:1,e:"Las células beta de los islotes de Langerhans del páncreas producen insulina, que baja la glucosa en sangre."},
+    {q:"¿Cuántos pares de nervios craneales tiene el ser humano?",o:["10","12","31","8"],a:1,e:"Son 12 pares, desde el I (olfatorio) hasta el XII (hipogloso). Los 31 pares son los nervios espinales."},
+    {q:"¿Qué molécula es la fuente inmediata de energía para la contracción muscular?",o:["ATP","Colesterol","Hemoglobina","Urea"],a:0,e:"El ATP se hidroliza para liberar energía; el músculo lo regenera con fosfocreatina, glucosa y grasas. Tenlo presente cuando entrenes."}
+  ];
+  var i=0,score=0,body=document.getElementById("qbody");
+  var pn=document.getElementById("pn"),ps=document.getElementById("ps"),pb=document.getElementById("pb");
+  function show(){
+    if(i>=Q.length){return end();}
+    var x=Q[i];
+    pn.textContent="Pregunta "+(i+1)+" de "+Q.length; ps.textContent="Aciertos: "+score;
+    pb.style.width=(i/Q.length*100)+"%";
+    body.innerHTML="";
+    var p=document.createElement("p");p.className="lead";p.textContent=x.q;body.appendChild(p);
+    var box=document.createElement("div");box.className="opts";body.appendChild(box);
+    var fb=document.createElement("div");fb.className="fb";body.appendChild(fb);
+    x.o.forEach(function(t,k){
+      var b=document.createElement("button");b.className="opt";b.type="button";b.textContent=t;
+      b.addEventListener("click",function(){
+        var all=box.querySelectorAll(".opt");
+        all.forEach(function(el,n){el.disabled=true;if(n===x.a)el.classList.add("ok");});
+        var good=k===x.a; if(good){score++;}else{b.classList.add("bad");}
+        ps.textContent="Aciertos: "+score;
+        fb.innerHTML="<strong>"+(good?"¡Correcto!":"Casi, pero no.")+"</strong>";
+        fb.appendChild(document.createTextNode(x.e));
+        fb.appendChild(document.createElement("br"));
+        var nx=document.createElement("button");nx.className="btn";nx.type="button";
+        nx.textContent=(i===Q.length-1)?"Ver resultado":"Siguiente pregunta";
+        nx.addEventListener("click",function(){i++;show();});
+        fb.appendChild(nx);fb.className="fb show";nx.focus();
+      });
+      box.appendChild(b);
+    });
+  }
+  function end(){
+    pb.style.width="100%";pn.textContent="Terminaste";ps.textContent="";
+    var m=score===Q.length?"¡Perfecto, doctor Eiverth!":score>=4?"¡Muy buen nivel!":score>=2?"Vas bien, un repaso y quedas listo.":"Buen intento, vuelve a probar.";
+    body.innerHTML="<div class='score'>"+score+" / "+Q.length+"</div><p class='lead'>"+m+"</p>";
+    var r=document.createElement("button");r.className="btn";r.type="button";r.textContent="Jugar otra vez";
+    r.addEventListener("click",function(){i=0;score=0;show();});
+    body.appendChild(r);
+  }
+  show();
+
+  document.getElementById("theme").addEventListener("click",function(){
+    var r=document.documentElement,dark=matchMedia("(prefers-color-scheme: dark)").matches;
+    var cur=r.getAttribute("data-theme")||(dark?"dark":"light");
+    r.setAttribute("data-theme",cur==="dark"?"light":"dark");
+  });
+})();
+</script>
+</body>
+</html>
