@@ -1,199 +1,352 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Hola, Eiverth</title>
-<style>
-:root{
-  --bg:#e9f3f2; --surface:#ffffff; --ink:#0b3a42; --muted:#4d6f75; --line:#bfdcd9;
-  --accent:#d6293e; --accent-ink:#ffffff; --ok:#1c7c54; --okbg:#d8f1e4; --bad:#b3261e; --badbg:#fbe0dd;
-  box-sizing:border-box;
-  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
-  color-scheme:light;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#071b20; --surface:#0d2b32; --ink:#e3f3f1; --muted:#9bc0bf; --line:#1d4a52;
-    --accent:#ff5468; --accent-ink:#2a0408; --ok:#6fdca6; --okbg:#10382a; --bad:#ff9a92; --badbg:#3d1512;
-    color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#071b20; --surface:#0d2b32; --ink:#e3f3f1; --muted:#9bc0bf; --line:#1d4a52;
-  --accent:#ff5468; --accent-ink:#2a0408; --ok:#6fdca6; --okbg:#10382a; --bad:#ff9a92; --badbg:#3d1512;
-  color-scheme:dark;
-}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-main{max-width:860px;margin:0 auto;padding:28px 20px 56px}
-.hero{padding:36px 0 8px}
-h1{font:700 clamp(2.6rem,9vw,4.6rem)/1.02 Georgia,"Times New Roman",serif;margin:0 0 14px;letter-spacing:-.02em}
-.sub{font-size:clamp(1.15rem,3.4vw,1.5rem);color:var(--muted);margin:0 0 26px;max-width:34ch;line-height:1.4}
-.sub b{color:var(--ink);font-weight:600}
-.check{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 20px 18px;margin-bottom:14px}
-.check h2{font:700 1.3rem/1.25 Georgia,serif;margin:0 0 12px}
-.chips{display:flex;flex-wrap:wrap;gap:10px}
-.chip{font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:999px;padding:10px 18px;min-height:44px;cursor:pointer;transition:border-color .15s,background .15s}
-.chip:hover{border-color:var(--accent)}
-.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
-.chip:focus-visible,.opt:focus-visible,.theme:focus-visible,.btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.reply{margin:14px 0 0;color:var(--muted);min-height:1.6em}
-.monitor{margin:30px 0 40px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px 8px;overflow:hidden}
-.monitor-top{display:flex;justify-content:space-between;align-items:center;font-size:.85rem;color:var(--muted)}
-.bpm{display:flex;align-items:center;gap:8px;font-weight:600;color:var(--accent)}
-.dot{width:9px;height:9px;border-radius:50%;background:var(--accent);animation:beat 1s infinite}
-@keyframes beat{0%,100%{transform:scale(1);opacity:1}15%{transform:scale(1.6)}30%{transform:scale(1)}}
-svg.ecg{display:block;width:100%;height:90px}
-.trace{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 3.2s ease-out forwards}
-@keyframes draw{to{stroke-dashoffset:0}}
-.grid{stroke:var(--line);stroke-width:1}
-.q{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:14px;padding:26px 22px}
-.q h2{font:700 1.5rem/1.25 Georgia,serif;margin:0 0 4px}
-.prog{display:flex;justify-content:space-between;color:var(--muted);font-size:.9rem;margin-bottom:12px}
-.bar{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:18px}
-.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
-.q p.lead{margin:0 0 18px;font-size:1.1rem;font-weight:600}
-.opts{display:grid;gap:10px}
-.opt{font:inherit;text-align:left;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:14px 16px;cursor:pointer;min-height:48px;transition:border-color .15s,background .15s}
-.opt:hover:not(:disabled){border-color:var(--accent)}
-.opt:disabled{cursor:default}
-.opt.ok{background:var(--okbg);border-color:var(--ok);color:var(--ok);font-weight:600}
-.opt.bad{background:var(--badbg);border-color:var(--bad);color:var(--bad)}
-.fb{margin-top:18px;padding:16px;border-radius:10px;background:var(--bg);border:1px dashed var(--line);display:none}
-.fb.show{display:block}
-.fb strong{display:block;margin-bottom:4px}
-.btn{margin-top:12px;font:inherit;background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:10px 22px;cursor:pointer;font-weight:600}
-.score{font:700 3rem/1 Georgia,serif;margin:6px 0 10px}
-.theme{position:fixed;right:14px;top:calc(env(safe-area-inset-top,0px) + 12px);font:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:.85rem;z-index:5}
-footer{margin-top:36px;text-align:center;color:var(--muted);font-size:.9rem}
-@media (prefers-reduced-motion: reduce){.trace{animation:none;stroke-dashoffset:0}.dot,.bar i{animation:none;transition:none}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eiverth | Med & Gym Tracker</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Configuración personalizada -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Rajdhani', 'sans-serif'],
+                    },
+                    colors: {
+                        neon: {
+                            cyan: '#00f3ff',
+                            purple: '#bc13fe',
+                            green: '#39ff14',
+                            red: '#ff003c',
+                            dark: '#050b14'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #050b14;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 243, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(188, 19, 254, 0.05) 0%, transparent 40%);
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        /* Efectos Neon */
+        .glow-cyan { box-shadow: 0 0 10px rgba(0, 243, 255, 0.3), inset 0 0 5px rgba(0, 243, 255, 0.1); }
+        .glow-cyan-text { text-shadow: 0 0 8px rgba(0, 243, 255, 0.6); }
+        .glow-purple { box-shadow: 0 0 15px rgba(188, 19, 254, 0.3), inset 0 0 10px rgba(188, 19, 254, 0.1); }
+        .glow-green { box-shadow: 0 0 15px rgba(57, 255, 20, 0.4), inset 0 0 10px rgba(57, 255, 20, 0.2); }
+        
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(10, 15, 30, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Inputs nativos oscuros */
+        select, input[type="text"], input[type="time"] {
+            color-scheme: dark;
+        }
+
+        /* Animaciones para el feedback */
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse-border {
+            0% { border-color: rgba(0, 243, 255, 0.3); }
+            50% { border-color: rgba(0, 243, 255, 1); box-shadow: 0 0 15px rgba(0,243,255,0.4); }
+            100% { border-color: rgba(0, 243, 255, 0.3); }
+        }
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+    </style>
 </head>
-<body>
-<button class="theme" id="theme" type="button" aria-label="Cambiar tema">Claro / Oscuro</button>
-<main>
-  <section class="hero">
-    <h1>Hola, Eiverth</h1>
-    <p class="sub"><b>¿Cómo estás hoy?</b> ¿Cómo te ha ido en clases? Cuéntame un poco antes de empezar.</p>
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-8 font-sans selection:bg-neon-cyan selection:text-black">
 
-    <div class="check" aria-live="polite">
-      <h2>¿Cómo amaneciste hoy?</h2>
-      <div class="chips" data-group="mood">
-        <button class="chip" type="button" data-r="¡Qué bueno! Aprovecha esa energía para estudiar con ganas.">Con toda la energía</button>
-        <button class="chip" type="button" data-r="Un día tranquilo también vale. Paso a paso se llega lejos.">Bien, tranquilo</button>
-        <button class="chip" type="button" data-r="Descansa cuando puedas y toma agua. Dormir bien también es parte de estudiar medicina.">Cansado</button>
-        <button class="chip" type="button" data-r="Respira hondo. Divide lo que tienes pendiente en partes pequeñas y empieza por una.">Estresado</button>
-      </div>
-      <p class="reply" id="r-mood"></p>
+    <main class="glass-panel w-full max-w-3xl rounded-3xl p-6 sm:p-10 relative z-10 border-t border-neon-cyan/30 shadow-[0_10px_40px_rgba(0,0,0,0.8)]">
+        
+        <!-- Encabezado -->
+        <header class="text-center mb-10">
+            <h1 class="text-3xl sm:text-4xl font-display font-bold text-white mb-2">
+                Reporte biométrico y de entrenamiento diario
+            </h1>
+            <h2 class="text-2xl sm:text-3xl font-display text-neon-cyan glow-cyan-text font-semibold mt-4">
+                ¡Hola Eiverth, ¿cómo estás?!
+            </h2>
+        </header>
+
+        <!-- Formulario -->
+        <form id="trackerForm" class="space-y-8" onsubmit="handleFormSubmit(event)">
+            
+            <!-- Pregunta 1: Entrenamiento -->
+            <section class="space-y-2">
+                <label for="workout" class="block text-lg font-semibold text-white">
+                    <span class="mr-2">⚡</span> ¿Qué vas a entrenar hoy, pierna o tren superior?
+                </label>
+                <select id="workout" required onchange="handleWorkoutChange()"
+                    class="w-full bg-slate-900/80 border border-slate-600 rounded-xl p-4 text-white focus:outline-none focus:border-neon-cyan focus:glow-cyan transition-all appearance-none cursor-pointer">
+                    <option value="" disabled selected>Selecciona tu rutina...</option>
+                    <option value="Pierna">Pierna</option>
+                    <option value="Tren Superior">Tren Superior</option>
+                </select>
+                <!-- Feedback Dinámico Q1 -->
+                <div id="workout-feedback" class="hidden text-neon-cyan font-bold italic pt-2 pl-2 fade-in"></div>
+            </section>
+
+            <!-- Pregunta 2: Creatina -->
+            <section class="space-y-2">
+                <label for="creatina" class="block text-lg font-semibold text-white">
+                    <span class="mr-2 text-neon-green">🔋</span> ¿Cómo te has sentido con la creatina?
+                </label>
+                <input type="text" id="creatina" placeholder="Escribe tu respuesta aquí..." required
+                    class="w-full bg-slate-900/80 border border-slate-600 rounded-xl p-4 text-white focus:outline-none focus:border-neon-green focus:shadow-[0_0_15px_rgba(57,255,20,0.2)] transition-all">
+            </section>
+
+            <!-- Pregunta 3: Descanso -->
+            <section class="space-y-2">
+                <label for="rest" class="block text-lg font-semibold text-white">
+                    <span class="mr-2">🛌</span> ¿Descansaste?
+                </label>
+                <select id="rest" required onchange="handleRestChange()"
+                    class="w-full bg-slate-900/80 border border-slate-600 rounded-xl p-4 text-white focus:outline-none focus:border-neon-purple focus:glow-purple transition-all appearance-none cursor-pointer">
+                    <option value="" disabled selected>Selecciona una opción...</option>
+                    <option value="Sí">Sí</option>
+                    <option value="No">No</option>
+                </select>
+                <!-- Feedback Dinámico Q3 -->
+                <div id="rest-feedback" class="hidden font-bold italic pt-2 pl-2 fade-in"></div>
+            </section>
+
+            <!-- Pregunta 4: Medicina (Interactiva) -->
+            <section class="space-y-4 p-6 rounded-2xl border border-neon-purple/40 bg-neon-purple/5 relative">
+                <label class="block text-xl font-display font-bold text-neon-purple glow-purple-text mb-2">
+                    ⚕️ Pregunta Médica
+                </label>
+                <p class="text-white text-lg">
+                    En el síndrome de Guillain-Barré, ¿cuál es el hallazgo característico en el LCR?
+                </p>
+                
+                <!-- Opciones -->
+                <div class="space-y-3 mt-4" id="med-options">
+                    <button type="button" onclick="checkAnswer('A', this)" class="med-btn w-full text-left p-4 rounded-xl border border-slate-600 bg-slate-900/50 text-slate-200 hover:bg-slate-800 hover:border-slate-400 transition-all">
+                        A) Pleocitosis
+                    </button>
+                    <button type="button" onclick="checkAnswer('B', this)" class="med-btn w-full text-left p-4 rounded-xl border border-slate-600 bg-slate-900/50 text-slate-200 hover:bg-slate-800 hover:border-slate-400 transition-all">
+                        B) Disociación albúmino-citológica
+                    </button>
+                    <button type="button" onclick="checkAnswer('C', this)" class="med-btn w-full text-left p-4 rounded-xl border border-slate-600 bg-slate-900/50 text-slate-200 hover:bg-slate-800 hover:border-slate-400 transition-all">
+                        C) Hipoglucorraquia
+                    </button>
+                </div>
+                
+                <!-- Feedback Médico -->
+                <div id="med-feedback" class="hidden mt-4 p-4 rounded-xl border fade-in text-sm md:text-base"></div>
+                <!-- Input oculto para validación de formulario -->
+                <input type="hidden" id="med-answered" required>
+            </section>
+
+            <!-- Pregunta 5: Hora -->
+            <section class="space-y-3">
+                <label for="workout-time" class="block text-xl font-display font-bold text-white text-center mt-8">
+                    ¿A qué hora entrenamos mañana?
+                </label>
+                <div class="flex justify-center">
+                    <input type="time" id="workout-time" required
+                        class="bg-slate-900/90 border-2 border-neon-cyan rounded-xl px-8 py-4 text-2xl font-display font-bold text-neon-cyan focus:outline-none focus:bg-black transition-all"
+                        style="animation: pulse-border 2s infinite;">
+                </div>
+            </section>
+
+            <!-- Botón Submit -->
+            <div class="pt-8">
+                <button type="submit" 
+                    class="w-full relative group overflow-hidden rounded-xl bg-neon-cyan/10 border-2 border-neon-cyan px-8 py-4 font-display font-bold text-2xl tracking-widest text-white transition-all hover:bg-neon-cyan hover:text-black hover:glow-cyan shadow-[0_0_20px_rgba(0,243,255,0.2)]">
+                    <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] skew-x-12"></div>
+                    CONFIRMAR
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <!-- Modal Futurista -->
+    <div id="success-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 backdrop-blur-xl opacity-0 transition-opacity duration-500">
+        <div class="glass-panel border border-neon-cyan glow-cyan rounded-3xl p-8 sm:p-12 max-w-2xl w-full mx-4 text-center transform scale-95 transition-transform duration-500" id="modal-content">
+            
+            <!-- Hora Gigante -->
+            <div class="mb-8">
+                <span id="display-time" class="text-7xl sm:text-9xl font-display font-bold text-neon-cyan glow-cyan-text tracking-tighter">
+                    --:--
+                </span>
+            </div>
+
+            <!-- Texto Exacto Solicitado -->
+            <div class="mb-10 px-4">
+                <p class="text-2xl sm:text-3xl font-display text-white leading-relaxed">
+                    excelente a esa hora nos vemos. pásame un capture de la hora que escogiste
+                </p>
+            </div>
+
+            <button type="button" onclick="closeModal()" 
+                class="w-full sm:w-auto px-10 py-3 bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold rounded-full transition-colors border border-slate-700 hover:border-slate-500 hover:text-white">
+                Cerrar y tomar capture
+            </button>
+        </div>
     </div>
 
-    <div class="check" aria-live="polite">
-      <h2>¿Cómo te ha ido en clases?</h2>
-      <div class="chips" data-group="clases">
-        <button class="chip" type="button" data-r="¡Excelente! Eso se celebra.">Muy bien</button>
-        <button class="chip" type="button" data-r="Vas por buen camino. Repasa lo de hoy antes de dormir y se te queda mejor.">Normal</button>
-        <button class="chip" type="button" data-r="Pasa a todos. Pregunta lo que no entendiste y ya está, tú puedes.">Me ha costado</button>
-      </div>
-      <p class="reply" id="r-clases"></p>
-    </div>
+    <!-- Script de lógica -->
+    <script>
+        // 1. Lógica dinámica del entrenamiento
+        function handleWorkoutChange() {
+            const select = document.getElementById('workout');
+            const feedback = document.getElementById('workout-feedback');
+            
+            feedback.classList.remove('hidden');
+            
+            if (select.value === 'Pierna') {
+                feedback.innerHTML = '🦵 ¡A destruir esas piernas!';
+            } else if (select.value === 'Tren Superior') {
+                feedback.innerHTML = '🦍 ¡A mutar esos brazos y pecho!';
+            }
+        }
 
-    <div class="check" aria-live="polite">
-      <h2>¿Hoy te toca entrenar?</h2>
-      <div class="chips" data-group="gym">
-        <button class="chip" type="button" data-r="¡Dale con todo! Calienta bien, hidrátate y cuida la técnica.">Sí, hoy toca</button>
-        <button class="chip" type="button" data-r="El descanso es parte del entrenamiento. Los músculos crecen mientras descansas.">Hoy descanso</button>
-        <button class="chip" type="button" data-r="No pasa nada. Aunque sea una caminata corta de 15 minutos suma.">No tuve tiempo</button>
-      </div>
-      <p class="reply" id="r-gym"></p>
-    </div>
-  </section>
+        // 2. Lógica dinámica del descanso
+        function handleRestChange() {
+            const select = document.getElementById('rest');
+            const feedback = document.getElementById('rest-feedback');
+            
+            feedback.classList.remove('hidden');
+            
+            if (select.value === 'Sí') {
+                feedback.className = 'font-bold italic pt-2 pl-2 fade-in text-neon-green';
+                feedback.innerHTML = '🔋 ¡Excelente, a romperla con toda la energía!';
+            } else if (select.value === 'No') {
+                feedback.className = 'font-bold italic pt-2 pl-2 fade-in text-yellow-400';
+                feedback.innerHTML = '⚠️ ¡Qué chimbo que no descansaste, ya más tarde te recuperas!';
+            }
+        }
 
-  <div class="monitor" aria-hidden="true">
-    <div class="monitor-top"><span>Ritmo sinusal</span><span class="bpm"><span class="dot"></span>72 lat/min</span></div>
-    <svg class="ecg" viewBox="0 0 800 90" preserveAspectRatio="none">
-      <g class="grid"><line x1="0" y1="45" x2="800" y2="45"/><line x1="200" y1="0" x2="200" y2="90"/><line x1="400" y1="0" x2="400" y2="90"/><line x1="600" y1="0" x2="600" y2="90"/></g>
-      <path class="trace" d="M0 50 H60 l8-8 8 8 H120 l8 6 14-48 16 66 8-24 H230 l10-14 14 14 H400 l8-8 8 8 H460 l8 6 14-48 16 66 8-24 H570 l10-14 14 14 H800"/>
-    </svg>
-  </div>
+        // 3. Lógica Pregunta Médica
+        function checkAnswer(selected, buttonElement) {
+            const allButtons = document.querySelectorAll('.med-btn');
+            const feedbackBox = document.getElementById('med-feedback');
+            const hiddenInput = document.getElementById('med-answered');
+            
+            // Deshabilitar todos los botones para evitar múltiples respuestas
+            allButtons.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                btn.classList.remove('hover:bg-slate-800', 'hover:border-slate-400');
+            });
 
-  <section class="q" aria-live="polite">
-    <h2>Preguntas de medicina para ti</h2>
-    <div class="prog"><span id="pn"></span><span id="ps"></span></div>
-    <div class="bar"><i id="pb"></i></div>
-    <div id="qbody"></div>
-  </section>
+            // Resaltar el botón clickeado quitándole la opacidad
+            buttonElement.classList.remove('opacity-50');
+            
+            // Validar respuesta
+            feedbackBox.classList.remove('hidden');
+            
+            if (selected === 'B') {
+                // Correcto
+                buttonElement.classList.remove('bg-slate-900/50', 'border-slate-600');
+                buttonElement.classList.add('bg-neon-green/20', 'border-neon-green', 'text-neon-green', 'shadow-[0_0_10px_rgba(57,255,20,0.3)]');
+                
+                feedbackBox.classList.add('bg-neon-green/10', 'border-neon-green/50', 'text-green-300');
+                feedbackBox.innerHTML = '<strong>¡CORRECTO! ✅</strong><br>La disociación albúmino-citológica (aumento de proteínas en el LCR sin aumento significativo de células) es el hallazgo clásico, reflejando inflamación de las raíces nerviosas sin una infección activa en el espacio subaracnoideo.';
+            } else {
+                // Incorrecto (A o C)
+                buttonElement.classList.remove('bg-slate-900/50', 'border-slate-600');
+                buttonElement.classList.add('bg-red-500/20', 'border-red-500', 'text-red-400', 'shadow-[0_0_10px_rgba(255,0,0,0.3)]');
+                
+                // Mostrar cuál era la correcta
+                allButtons[1].classList.remove('opacity-50');
+                allButtons[1].classList.add('border-neon-green/50', 'text-neon-green');
 
-  <footer>Que tengas un excelente día de estudio, futuro doctor.</footer>
-</main>
-<script>
-(function(){
-  document.querySelectorAll(".chips").forEach(function(g){
-    var out=document.getElementById("r-"+g.getAttribute("data-group"));
-    g.querySelectorAll(".chip").forEach(function(c){
-      c.setAttribute("aria-pressed","false");
-      c.addEventListener("click",function(){
-        g.querySelectorAll(".chip").forEach(function(x){x.setAttribute("aria-pressed","false")});
-        c.setAttribute("aria-pressed","true");
-        out.textContent=c.getAttribute("data-r");
-      });
-    });
-  });
+                feedbackBox.classList.add('bg-red-500/10', 'border-red-500/50', 'text-red-200');
+                
+                if (selected === 'A') {
+                    feedbackBox.innerHTML = '<strong>¡INCORRECTO! ❌</strong><br>La pleocitosis (aumento de células) sugiere etiologías infecciosas (como meningitis). En Guillain-Barré el recuento celular suele ser normal.<br><br><em>Respuesta correcta: B) Disociación albúmino-citológica.</em>';
+                } else if (selected === 'C') {
+                    feedbackBox.innerHTML = '<strong>¡INCORRECTO! ❌</strong><br>La hipoglucorraquia (glucosa baja) se ve típicamente en meningitis bacteriana o fúngica, no en Guillain-Barré (donde la glucosa es normal).<br><br><em>Respuesta correcta: B) Disociación albúmino-citológica.</em>';
+                }
+            }
 
-  var Q=[
-    {q:"¿Qué estructura del corazón funciona como el marcapasos natural?",o:["Nodo sinoauricular","Nodo auriculoventricular","Haz de His","Fibras de Purkinje"],a:0,e:"El nodo sinoauricular, en la aurícula derecha, genera el impulso que inicia cada latido, a unos 60–100 por minuto en reposo."},
-    {q:"¿Qué célula de la sangre transporta el oxígeno?",o:["Leucocito","Eritrocito (glóbulo rojo)","Plaqueta","Linfocito"],a:1,e:"Los eritrocitos contienen hemoglobina, la proteína que une el oxígeno en los pulmones y lo entrega a los tejidos."},
-    {q:"¿Cuál es el hueso más largo del cuerpo humano?",o:["Húmero","Tibia","Fémur","Peroné"],a:2,e:"El fémur, en el muslo, es el hueso más largo y también el más resistente."},
-    {q:"¿Qué órgano produce la insulina?",o:["Hígado","Páncreas","Riñón","Bazo"],a:1,e:"Las células beta de los islotes de Langerhans del páncreas producen insulina, que baja la glucosa en sangre."},
-    {q:"¿Cuántos pares de nervios craneales tiene el ser humano?",o:["10","12","31","8"],a:1,e:"Son 12 pares, desde el I (olfatorio) hasta el XII (hipogloso). Los 31 pares son los nervios espinales."},
-    {q:"¿Qué molécula es la fuente inmediata de energía para la contracción muscular?",o:["ATP","Colesterol","Hemoglobina","Urea"],a:0,e:"El ATP se hidroliza para liberar energía; el músculo lo regenera con fosfocreatina, glucosa y grasas. Tenlo presente cuando entrenes."}
-  ];
-  var i=0,score=0,body=document.getElementById("qbody");
-  var pn=document.getElementById("pn"),ps=document.getElementById("ps"),pb=document.getElementById("pb");
-  function show(){
-    if(i>=Q.length){return end();}
-    var x=Q[i];
-    pn.textContent="Pregunta "+(i+1)+" de "+Q.length; ps.textContent="Aciertos: "+score;
-    pb.style.width=(i/Q.length*100)+"%";
-    body.innerHTML="";
-    var p=document.createElement("p");p.className="lead";p.textContent=x.q;body.appendChild(p);
-    var box=document.createElement("div");box.className="opts";body.appendChild(box);
-    var fb=document.createElement("div");fb.className="fb";body.appendChild(fb);
-    x.o.forEach(function(t,k){
-      var b=document.createElement("button");b.className="opt";b.type="button";b.textContent=t;
-      b.addEventListener("click",function(){
-        var all=box.querySelectorAll(".opt");
-        all.forEach(function(el,n){el.disabled=true;if(n===x.a)el.classList.add("ok");});
-        var good=k===x.a; if(good){score++;}else{b.classList.add("bad");}
-        ps.textContent="Aciertos: "+score;
-        fb.innerHTML="<strong>"+(good?"¡Correcto!":"Casi, pero no.")+"</strong>";
-        fb.appendChild(document.createTextNode(x.e));
-        fb.appendChild(document.createElement("br"));
-        var nx=document.createElement("button");nx.className="btn";nx.type="button";
-        nx.textContent=(i===Q.length-1)?"Ver resultado":"Siguiente pregunta";
-        nx.addEventListener("click",function(){i++;show();});
-        fb.appendChild(nx);fb.className="fb show";nx.focus();
-      });
-      box.appendChild(b);
-    });
-  }
-  function end(){
-    pb.style.width="100%";pn.textContent="Terminaste";ps.textContent="";
-    var m=score===Q.length?"¡Perfecto, doctor Eiverth!":score>=4?"¡Muy buen nivel!":score>=2?"Vas bien, un repaso y quedas listo.":"Buen intento, vuelve a probar.";
-    body.innerHTML="<div class='score'>"+score+" / "+Q.length+"</div><p class='lead'>"+m+"</p>";
-    var r=document.createElement("button");r.className="btn";r.type="button";r.textContent="Jugar otra vez";
-    r.addEventListener("click",function(){i=0;score=0;show();});
-    body.appendChild(r);
-  }
-  show();
+            // Marcar como respondida para permitir el submit
+            hiddenInput.value = "answered";
+        }
 
-  document.getElementById("theme").addEventListener("click",function(){
-    var r=document.documentElement,dark=matchMedia("(prefers-color-scheme: dark)").matches;
-    var cur=r.getAttribute("data-theme")||(dark?"dark":"light");
-    r.setAttribute("data-theme",cur==="dark"?"light":"dark");
-  });
-})();
-</script>
+        // 4. Lógica de Envío y Modal
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const hiddenMedInput = document.getElementById('med-answered').value;
+            if (!hiddenMedInput) {
+                alert("¡Doctor Eiverth, debe responder la pregunta médica antes de continuar!");
+                return;
+            }
+
+            const timeInput = document.getElementById('workout-time').value;
+            
+            // Formatear hora a AM/PM
+            const [hours, minutes] = timeInput.split(':');
+            const date = new Date();
+            date.setHours(parseInt(hours, 10));
+            date.setMinutes(parseInt(minutes, 10));
+            
+            const formattedTime = date.toLocaleTimeString('es-ES', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            }).toUpperCase();
+
+            // Mostrar en el modal
+            document.getElementById('display-time').textContent = formattedTime;
+            
+            const modal = document.getElementById('success-modal');
+            const modalContent = document.getElementById('modal-content');
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Trigger animaciones
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.classList.add('opacity-100');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('success-modal');
+            const modalContent = document.getElementById('modal-content');
+            
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 500);
+        }
+    </script>
 </body>
 </html>
