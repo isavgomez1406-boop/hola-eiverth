@@ -1,352 +1,976 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eiverth | Med & Gym Tracker</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-    
-    <!-- Configuración personalizada -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Rajdhani', 'sans-serif'],
-                    },
-                    colors: {
-                        neon: {
-                            cyan: '#00f3ff',
-                            purple: '#bc13fe',
-                            green: '#39ff14',
-                            red: '#ff003c',
-                            dark: '#050b14'
-                        }
-                    }
-                }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¡Juego para Eiverth! - Fármacos Anestésicos 🩺</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            medical: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              400: '#2dd4bf',
+              500: '#14b8a6',
+              600: '#0d9488',
+              800: '#115e59',
+              900: '#134e4a',
+              950: '#042f2e',
+            },
+            cyanGlow: '#06b6d4',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          animation: {
+            'pulse-glow': 'pulseGlow 2s infinite ease-in-out',
+            'bounce-short': 'bounceShort 0.5s ease-in-out 1',
+            'float': 'float 3s ease-in-out infinite',
+          },
+          keyframes: {
+            pulseGlow: {
+              '0%, 100%': { boxShadow: '0 0 15px rgba(6, 182, 212, 0.4)' },
+              '50%': { boxShadow: '0 0 25px rgba(20, 184, 166, 0.8)' },
+            },
+            bounceShort: {
+              '0%, 100%': { transform: 'scale(1)' },
+              '50%': { transform: 'scale(1.08)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-6px)' },
             }
+          }
         }
-    </script>
-    <style>
-        body {
-            background-color: #050b14;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 243, 255, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(188, 19, 254, 0.05) 0%, transparent 40%);
-            color: #e2e8f0;
-            overflow-x: hidden;
-        }
+      }
+    }
+  </script>
 
-        /* Efectos Neon */
-        .glow-cyan { box-shadow: 0 0 10px rgba(0, 243, 255, 0.3), inset 0 0 5px rgba(0, 243, 255, 0.1); }
-        .glow-cyan-text { text-shadow: 0 0 8px rgba(0, 243, 255, 0.6); }
-        .glow-purple { box-shadow: 0 0 15px rgba(188, 19, 254, 0.3), inset 0 0 10px rgba(188, 19, 254, 0.1); }
-        .glow-green { box-shadow: 0 0 15px rgba(57, 255, 20, 0.4), inset 0 0 10px rgba(57, 255, 20, 0.2); }
-        
-        /* Glassmorphism */
-        .glass-panel {
-            background: rgba(10, 15, 30, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        /* Inputs nativos oscuros */
-        select, input[type="text"], input[type="time"] {
-            color-scheme: dark;
-        }
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-        /* Animaciones para el feedback */
-        .fade-in {
-            animation: fadeIn 0.4s ease-out forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes pulse-border {
-            0% { border-color: rgba(0, 243, 255, 0.3); }
-            50% { border-color: rgba(0, 243, 255, 1); box-shadow: 0 0 15px rgba(0,243,255,0.4); }
-            100% { border-color: rgba(0, 243, 255, 0.3); }
-        }
-        @keyframes shimmer {
-            100% { transform: translateX(100%); }
-        }
-    </style>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* CSS 3D Card Flip Styling */
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+    .transform-style-3d {
+      transform-style: preserve-3d;
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+
+    /* Glassmorphism background effect */
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(45, 212, 191, 0.2);
+    }
+    .glass-modal {
+      background: rgba(10, 15, 29, 0.92);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(20, 184, 166, 0.3);
+    }
+
+    /* Custom scrollbar for modals */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #0d9488;
+      border-radius: 9999px;
+    }
+  </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 sm:p-8 font-sans selection:bg-neon-cyan selection:text-black">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden relative selection:bg-teal-500 selection:text-white">
 
-    <main class="glass-panel w-full max-w-3xl rounded-3xl p-6 sm:p-10 relative z-10 border-t border-neon-cyan/30 shadow-[0_10px_40px_rgba(0,0,0,0.8)]">
-        
-        <!-- Encabezado -->
-        <header class="text-center mb-10">
-            <h1 class="text-3xl sm:text-4xl font-display font-bold text-white mb-2">
-                Reporte biométrico y de entrenamiento diario
-            </h1>
-            <h2 class="text-2xl sm:text-3xl font-display text-neon-cyan glow-cyan-text font-semibold mt-4">
-                ¡Hola Eiverth, ¿cómo estás?!
-            </h2>
-        </header>
+  <!-- Ambient Ambient Background Glows -->
+  <div class="fixed top-0 left-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse"></div>
+  <div class="fixed bottom-0 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse" style="animation-delay: 1s;"></div>
 
-        <!-- Formulario -->
-        <form id="trackerForm" class="space-y-8" onsubmit="handleFormSubmit(event)">
-            
-            <!-- Pregunta 1: Entrenamiento -->
-            <section class="space-y-2">
-                <label for="workout" class="block text-lg font-semibold text-white">
-                    <span class="mr-2">⚡</span> ¿Qué vas a entrenar hoy, pierna o tren superior?
-                </label>
-                <select id="workout" required onchange="handleWorkoutChange()"
-                    class="w-full bg-slate-900/80 border border-slate-600 rounded-xl p-4 text-white focus:outline-none focus:border-neon-cyan focus:glow-cyan transition-all appearance-none cursor-pointer">
-                    <option value="" disabled selected>Selecciona tu rutina...</option>
-                    <option value="Pierna">Pierna</option>
-                    <option value="Tren Superior">Tren Superior</option>
-                </select>
-                <!-- Feedback Dinámico Q1 -->
-                <div id="workout-feedback" class="hidden text-neon-cyan font-bold italic pt-2 pl-2 fade-in"></div>
-            </section>
-
-            <!-- Pregunta 2: Creatina -->
-            <section class="space-y-2">
-                <label for="creatina" class="block text-lg font-semibold text-white">
-                    <span class="mr-2 text-neon-green">🔋</span> ¿Cómo te has sentido con la creatina?
-                </label>
-                <input type="text" id="creatina" placeholder="Escribe tu respuesta aquí..." required
-                    class="w-full bg-slate-900/80 border border-slate-600 rounded-xl p-4 text-white focus:outline-none focus:border-neon-green focus:shadow-[0_0_15px_rgba(57,255,20,0.2)] transition-all">
-            </section>
-
-            <!-- Pregunta 3: Descanso -->
-            <section class="space-y-2">
-                <label for="rest" class="block text-lg font-semibold text-white">
-                    <span class="mr-2">🛌</span> ¿Descansaste?
-                </label>
-                <select id="rest" required onchange="handleRestChange()"
-                    class="w-full bg-slate-900/80 border border-slate-600 rounded-xl p-4 text-white focus:outline-none focus:border-neon-purple focus:glow-purple transition-all appearance-none cursor-pointer">
-                    <option value="" disabled selected>Selecciona una opción...</option>
-                    <option value="Sí">Sí</option>
-                    <option value="No">No</option>
-                </select>
-                <!-- Feedback Dinámico Q3 -->
-                <div id="rest-feedback" class="hidden font-bold italic pt-2 pl-2 fade-in"></div>
-            </section>
-
-            <!-- Pregunta 4: Medicina (Interactiva) -->
-            <section class="space-y-4 p-6 rounded-2xl border border-neon-purple/40 bg-neon-purple/5 relative">
-                <label class="block text-xl font-display font-bold text-neon-purple glow-purple-text mb-2">
-                    ⚕️ Pregunta Médica
-                </label>
-                <p class="text-white text-lg">
-                    En el síndrome de Guillain-Barré, ¿cuál es el hallazgo característico en el LCR?
-                </p>
-                
-                <!-- Opciones -->
-                <div class="space-y-3 mt-4" id="med-options">
-                    <button type="button" onclick="checkAnswer('A', this)" class="med-btn w-full text-left p-4 rounded-xl border border-slate-600 bg-slate-900/50 text-slate-200 hover:bg-slate-800 hover:border-slate-400 transition-all">
-                        A) Pleocitosis
-                    </button>
-                    <button type="button" onclick="checkAnswer('B', this)" class="med-btn w-full text-left p-4 rounded-xl border border-slate-600 bg-slate-900/50 text-slate-200 hover:bg-slate-800 hover:border-slate-400 transition-all">
-                        B) Disociación albúmino-citológica
-                    </button>
-                    <button type="button" onclick="checkAnswer('C', this)" class="med-btn w-full text-left p-4 rounded-xl border border-slate-600 bg-slate-900/50 text-slate-200 hover:bg-slate-800 hover:border-slate-400 transition-all">
-                        C) Hipoglucorraquia
-                    </button>
-                </div>
-                
-                <!-- Feedback Médico -->
-                <div id="med-feedback" class="hidden mt-4 p-4 rounded-xl border fade-in text-sm md:text-base"></div>
-                <!-- Input oculto para validación de formulario -->
-                <input type="hidden" id="med-answered" required>
-            </section>
-
-            <!-- Pregunta 5: Hora -->
-            <section class="space-y-3">
-                <label for="workout-time" class="block text-xl font-display font-bold text-white text-center mt-8">
-                    ¿A qué hora entrenamos mañana?
-                </label>
-                <div class="flex justify-center">
-                    <input type="time" id="workout-time" required
-                        class="bg-slate-900/90 border-2 border-neon-cyan rounded-xl px-8 py-4 text-2xl font-display font-bold text-neon-cyan focus:outline-none focus:bg-black transition-all"
-                        style="animation: pulse-border 2s infinite;">
-                </div>
-            </section>
-
-            <!-- Botón Submit -->
-            <div class="pt-8">
-                <button type="submit" 
-                    class="w-full relative group overflow-hidden rounded-xl bg-neon-cyan/10 border-2 border-neon-cyan px-8 py-4 font-display font-bold text-2xl tracking-widest text-white transition-all hover:bg-neon-cyan hover:text-black hover:glow-cyan shadow-[0_0_20px_rgba(0,243,255,0.2)]">
-                    <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] skew-x-12"></div>
-                    CONFIRMAR
-                </button>
-            </div>
-        </form>
-    </main>
-
-    <!-- Modal Futurista -->
-    <div id="success-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 backdrop-blur-xl opacity-0 transition-opacity duration-500">
-        <div class="glass-panel border border-neon-cyan glow-cyan rounded-3xl p-8 sm:p-12 max-w-2xl w-full mx-4 text-center transform scale-95 transition-transform duration-500" id="modal-content">
-            
-            <!-- Hora Gigante -->
-            <div class="mb-8">
-                <span id="display-time" class="text-7xl sm:text-9xl font-display font-bold text-neon-cyan glow-cyan-text tracking-tighter">
-                    --:--
-                </span>
-            </div>
-
-            <!-- Texto Exacto Solicitado -->
-            <div class="mb-10 px-4">
-                <p class="text-2xl sm:text-3xl font-display text-white leading-relaxed">
-                    excelente a esa hora nos vemos. pásame un capture de la hora que escogiste
-                </p>
-            </div>
-
-            <button type="button" onclick="closeModal()" 
-                class="w-full sm:w-auto px-10 py-3 bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold rounded-full transition-colors border border-slate-700 hover:border-slate-500 hover:text-white">
-                Cerrar y tomar capture
-            </button>
+  <!-- Header Container -->
+  <header class="w-full max-w-5xl mx-auto px-4 pt-6 pb-2">
+    <div class="glass-card rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-4 border border-teal-500/20">
+      
+      <!-- Greeting Section -->
+      <div class="text-center md:text-left flex items-center gap-3 sm:gap-4">
+        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-teal-500 to-cyan-400 flex items-center justify-center text-slate-950 text-2xl sm:text-3xl font-extrabold shadow-lg shadow-teal-500/30 animate-float">
+          <i class="fa-solid fa-notes-medical"></i>
         </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-cyan-200 to-emerald-300 tracking-tight">
+            ¡Hola Eiverth, tengo un juego para tiiii! 🩺✨
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1 flex items-center justify-center md:justify-start gap-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            Reto de Memoria: Fármacos Anestésicos & Farmacología
+          </p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2 sm:gap-3 w-full md:w-auto justify-center">
+        <button id="btnSoundToggle" onclick="toggleSound()" class="px-3.5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-slate-300 hover:text-white transition-all flex items-center gap-2 text-xs sm:text-sm font-semibold shadow-md active:scale-95" title="Activar/Desactivar Sonido">
+          <i id="soundIcon" class="fa-solid fa-volume-high text-teal-400"></i>
+          <span class="hidden sm:inline">Sonido</span>
+        </button>
+
+        <button onclick="openFarmacopeaModal()" class="px-3.5 py-2.5 rounded-xl bg-teal-950/60 hover:bg-teal-900/60 border border-teal-500/40 text-teal-300 hover:text-teal-200 transition-all flex items-center gap-2 text-xs sm:text-sm font-semibold shadow-md active:scale-95">
+          <i class="fa-solid fa-book-medical"></i>
+          <span>Farmacopea</span>
+        </button>
+
+        <button onclick="restartGame()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-bold transition-all flex items-center gap-2 text-xs sm:text-sm shadow-lg shadow-teal-500/20 active:scale-95">
+          <i class="fa-solid fa-rotate-right"></i>
+          <span>Reiniciar</span>
+        </button>
+      </div>
     </div>
 
-    <!-- Script de lógica -->
-    <script>
-        // 1. Lógica dinámica del entrenamiento
-        function handleWorkoutChange() {
-            const select = document.getElementById('workout');
-            const feedback = document.getElementById('workout-feedback');
+    <!-- Live Game Dashboard Stats -->
+    <div class="grid grid-cols-3 gap-3 mt-4">
+      <!-- Pairs Counter -->
+      <div class="glass-card rounded-xl p-3 text-center border border-teal-500/10">
+        <div class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-400 font-medium">Pares Encontrados</div>
+        <div class="text-lg sm:text-2xl font-black text-teal-300 mt-0.5 flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-puzzle-piece text-xs sm:text-base text-teal-400"></i>
+          <span id="matchedCount">0</span> <span class="text-slate-500 text-sm font-semibold">/ 8</span>
+        </div>
+      </div>
+
+      <!-- Moves Counter -->
+      <div class="glass-card rounded-xl p-3 text-center border border-teal-500/10">
+        <div class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-400 font-medium">Movimientos</div>
+        <div class="text-lg sm:text-2xl font-black text-cyan-300 mt-0.5 flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-hand-pointer text-xs sm:text-base text-cyan-400"></i>
+          <span id="movesCount">0</span>
+        </div>
+      </div>
+
+      <!-- Timer Counter -->
+      <div class="glass-card rounded-xl p-3 text-center border border-teal-500/10">
+        <div class="text-[10px] sm:text-xs uppercase tracking-wider text-slate-400 font-medium">Tiempo Transcurrido</div>
+        <div class="text-lg sm:text-2xl font-black text-emerald-300 mt-0.5 flex items-center justify-center gap-1.5">
+          <i class="fa-regular fa-clock text-xs sm:text-base text-emerald-400"></i>
+          <span id="timerDisplay">00:00</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Game Board Container -->
+  <main class="w-full max-w-5xl mx-auto px-4 py-4 my-auto flex-grow flex items-center justify-center">
+    <div id="gameBoard" class="grid grid-cols-4 gap-2.5 sm:gap-4 w-full">
+      <!-- Dynamic Memory Cards Generated via JS -->
+    </div>
+  </main>
+
+  <!-- Footer Info -->
+  <footer class="w-full text-center py-4 text-xs text-slate-500 border-t border-slate-900 bg-slate-950/80">
+    <p>Diseñado especialmente con 🩺 y ❤️ para <span class="text-teal-400 font-semibold">Eiverth</span> • Fármacos Anestésicos & Farmacología Clínica</p>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- MODAL: DRUG FACT SHEET (ON PAIR MATCHED) -->
+  <!-- ========================================== -->
+  <div id="drugModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+    <div class="glass-modal max-w-xl w-full rounded-3xl p-6 sm:p-8 shadow-2xl relative border border-teal-500/40 transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto">
+      
+      <!-- Close Button -->
+      <button onclick="closeDrugModal()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-all border border-slate-700">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <!-- Match Header Tag -->
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-bold uppercase tracking-wider mb-3">
+        <i class="fa-solid fa-circle-check"></i> ¡Par Encontrado Con Éxito!
+      </div>
+
+      <!-- Drug Main Banner -->
+      <div class="flex items-start gap-4 my-2">
+        <div id="modalDrugIconBox" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex-shrink-0 flex items-center justify-center text-3xl sm:text-4xl shadow-xl">
+          <!-- Icon injected dynamically -->
+        </div>
+        <div>
+          <h2 id="modalDrugName" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            <!-- Drug Name -->
+          </h2>
+          <span id="modalDrugCategory" class="inline-block text-xs font-semibold px-2.5 py-0.5 rounded-md mt-1 border">
+            <!-- Category Badge -->
+          </span>
+        </div>
+      </div>
+
+      <hr class="border-slate-800/80 my-4">
+
+      <!-- Medical Details Content -->
+      <div class="space-y-4 text-slate-300 text-sm sm:text-base leading-relaxed">
+        
+        <!-- Mecanismo de Acción -->
+        <div class="bg-slate-900/60 rounded-2xl p-4 border border-slate-800">
+          <div class="flex items-center gap-2 text-teal-400 font-bold text-sm uppercase tracking-wide mb-1.5">
+            <i class="fa-solid fa-microscope text-base"></i> Mecanismo de Acción
+          </div>
+          <p id="modalDrugMechanism" class="text-slate-200">
+            <!-- Mechanism -->
+          </p>
+        </div>
+
+        <!-- Indicación & Uso Anestésico -->
+        <div class="bg-slate-900/60 rounded-2xl p-4 border border-slate-800">
+          <div class="flex items-center gap-2 text-cyan-400 font-bold text-sm uppercase tracking-wide mb-1.5">
+            <i class="fa-solid fa-syringe text-base"></i> Uso Clínico en Anestesia
+          </div>
+          <p id="modalDrugUsage" class="text-slate-200">
+            <!-- Usage -->
+          </p>
+        </div>
+
+        <!-- Perlita Médica / Dato Curioso -->
+        <div class="bg-gradient-to-r from-teal-950/50 to-slate-900/60 rounded-2xl p-4 border border-teal-500/20">
+          <div class="flex items-center gap-2 text-amber-300 font-bold text-sm uppercase tracking-wide mb-1.5">
+            <i class="fa-solid fa-lightbulb text-base"></i> Dato Anestésico Clave
+          </div>
+          <p id="modalDrugPearl" class="text-amber-100/90 text-xs sm:text-sm italic">
+            <!-- Pearl -->
+          </p>
+        </div>
+      </div>
+
+      <!-- Modal Footer Button -->
+      <div class="mt-6 text-center">
+        <button onclick="closeDrugModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-extrabold transition-all shadow-lg shadow-teal-500/25 active:scale-98 text-sm sm:text-base">
+          Continuar Jugando <i class="fa-solid fa-arrow-right ml-1"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- MODAL: VICTORY CELEBRATION (GAME COMPLETE) -->
+  <!-- ========================================== -->
+  <div id="victoryModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-lg z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+    <div class="glass-modal max-w-lg w-full rounded-3xl p-6 sm:p-8 shadow-2xl text-center relative border border-teal-400/50 transform scale-95 transition-transform duration-300">
+      
+      <!-- Trophy Icon Graphic -->
+      <div class="w-20 h-20 sm:w-24 sm:h-24 mx-auto bg-gradient-to-tr from-amber-400 via-teal-400 to-cyan-300 rounded-3xl flex items-center justify-center text-slate-950 text-4xl sm:text-5xl shadow-xl shadow-teal-500/30 mb-4 animate-bounce-short">
+        <i class="fa-solid fa-trophy"></i>
+      </div>
+
+      <h2 class="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-cyan-200 to-emerald-300">
+        ¡Excelente Trabajo, Eiverth! 🎉🩺
+      </h2>
+      
+      <p class="text-slate-300 text-sm sm:text-base mt-2">
+        Has completado con éxito todo el panel de fármacos anestésicos. ¡Demostraste un dominio total de la farmacología perioperatoria!
+      </p>
+
+      <!-- Stats Summary Card -->
+      <div class="grid grid-cols-3 gap-3 my-6 bg-slate-900/80 p-4 rounded-2xl border border-teal-500/20">
+        <div>
+          <div class="text-[10px] sm:text-xs text-slate-400 uppercase font-semibold">Tiempo</div>
+          <div id="finalTime" class="text-lg sm:text-xl font-bold text-emerald-300 mt-1">--:--</div>
+        </div>
+        <div>
+          <div class="text-[10px] sm:text-xs text-slate-400 uppercase font-semibold">Intentos</div>
+          <div id="finalMoves" class="text-lg sm:text-xl font-bold text-cyan-300 mt-1">0</div>
+        </div>
+        <div>
+          <div class="text-[10px] sm:text-xs text-slate-400 uppercase font-semibold">Precisión</div>
+          <div id="finalAccuracy" class="text-lg sm:text-xl font-bold text-teal-300 mt-1">100%</div>
+        </div>
+      </div>
+
+      <!-- Personalized Note -->
+      <div class="p-4 rounded-2xl bg-teal-950/40 border border-teal-500/30 text-teal-200 text-xs sm:text-sm text-left italic mb-6">
+        <i class="fa-solid fa-quote-left text-teal-400/50 mr-1"></i>
+        "Que tu pulso siga siendo firme, tu inducción anestésica impecable y tu curiosidad por la medicina inagotable." ✨
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button onclick="openFarmacopeaModal()" class="flex-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold border border-slate-700 transition-all text-xs sm:text-sm">
+          <i class="fa-solid fa-book-medical mr-1"></i> Repasar Fármacos
+        </button>
+
+        <button onclick="restartGame()" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 text-slate-950 font-extrabold transition-all shadow-lg shadow-teal-500/30 text-xs sm:text-sm">
+          <i class="fa-solid fa-rotate-right mr-1"></i> Jugar De Nuevo
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- MODAL: FARMACOPEA COMPENDIUM / STUDY DICTIONARY -->
+  <!-- ========================================== -->
+  <div id="farmacopeaModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+    <div class="glass-modal max-w-3xl w-full rounded-3xl p-6 sm:p-8 shadow-2xl relative border border-teal-500/40 transform scale-95 transition-transform duration-300 max-h-[85vh] flex flex-col">
+      
+      <!-- Close Button -->
+      <button onclick="closeFarmacopeaModal()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-all border border-slate-700">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-teal-500/20 text-teal-300 flex items-center justify-center text-xl border border-teal-500/30">
+          <i class="fa-solid fa-book-medical"></i>
+        </div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">Compendio Anestésico de Eiverth</h2>
+          <p class="text-xs text-slate-400">Guía rápida de los 8 fármacos anestésicos del juego</p>
+        </div>
+      </div>
+
+      <!-- Scrollable Drug List -->
+      <div id="farmacopeaList" class="overflow-y-auto space-y-4 pr-1 flex-grow">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-slate-800 text-center">
+        <button onclick="closeFarmacopeaModal()" class="px-6 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold transition-all text-xs sm:text-sm">
+          Cerrar Compendio
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT LOGIC -->
+  <!-- ========================================== -->
+  <script>
+    /* ==========================================
+       1. DATASET: 8 ANESTHETIC DRUGS
+    ========================================== */
+    const ANESTHETIC_DRUGS = [
+      {
+        id: 'propofol',
+        name: 'Propofol',
+        category: 'Inductor Intravenoso',
+        categoryBg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+        cardGradient: 'from-emerald-950 to-slate-900 border-emerald-500/40',
+        icon: 'fa-vial-virus',
+        iconBg: 'bg-emerald-500/20 text-emerald-300',
+        mechanism: 'Modulador alostérico positivo de los receptores GABA_A en el SNC. Incrementa la entrada de iones cloruro, hiperpolarizando la membrana neuronal y provocando una rápida depresión del SNC.',
+        usage: 'Inducción y mantenimiento de anestesia general, sedación consciente en procedimientos breves y sedación de pacientes en UCI.',
+        pearl: 'Conocido popularmente como "la leche de la amnesia" debido a su emulsión lipídica blanca. Destaca por su rápido inicio (~30 seg) y sus notables propiedades antieméticas.'
+      },
+      {
+        id: 'ketamina',
+        name: 'Ketamina',
+        category: 'Anestésico Disociativo',
+        categoryBg: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
+        cardGradient: 'from-purple-950 to-slate-900 border-purple-500/40',
+        icon: 'fa-brain',
+        iconBg: 'bg-purple-500/20 text-purple-300',
+        mechanism: 'Antagonista no competitivo de los receptores N-metil-D-aspartato (NMDA) del glutamato. Bloquea la neurotransmisión excitadora sin primariamente deprimir el eje respiratorio.',
+        usage: 'Inducción anestésica en pacientes hemodinámicamente inestables, analgesia multimodal perioperatoria, broncoespasmo severo y manejo del dolor agudo/crónico.',
+        pearl: 'Produce "anestesia disociativa" (desconexión entre el sistema límbico y la corteza) preservando el impulso respiratorio y los reflejos protectores de la vía aérea.'
+      },
+      {
+        id: 'fentanilo',
+        name: 'Fentanilo',
+        category: 'Opioide Sintético Potente',
+        categoryBg: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
+        cardGradient: 'from-rose-950 to-slate-900 border-rose-500/40',
+        icon: 'fa-capsules',
+        iconBg: 'bg-rose-500/20 text-rose-300',
+        mechanism: 'Agonista potente y selectivo de los receptores µ-opioides (Mu) en el cerebro y médula espinal. Inhibe la liberación de neurotransmisores nociceptivos como la Sustancia P.',
+        usage: 'Analgesia transoperatoria, atenuación de la respuesta simpática a la laringoscopia/intubación endotraqueal y componente analgésico en anestesia balanceada.',
+        pearl: 'Es aproximadamente 100 veces más potente que la morfina. Su alta liposolubilidad le otorga un inicio de acción casi instantáneo (1-2 minutos IV).'
+      },
+      {
+        id: 'sevoflurano',
+        name: 'Sevoflurano',
+        category: 'Anestésico Inhalatorio',
+        categoryBg: 'bg-sky-500/20 text-sky-300 border-sky-500/40',
+        cardGradient: 'from-sky-950 to-slate-900 border-sky-500/40',
+        icon: 'fa-wind',
+        iconBg: 'bg-sky-500/20 text-sky-300',
+        mechanism: 'Agente halogenado volátil que potencia la actividad de receptores inhibidores (GABA_A y glicina) e inhibe canales iónicos excitadores en el SNC.',
+        usage: 'Inducción anestésica por inhalación y mantenimiento de anestesia general en cirugías ambulatorias y pediátricas.',
+        pearl: 'Su olor agradable y ausencia de pungencia lo convierten en el fármaco de elección para inducciones inhalatorias suaves, especialmente en niños.'
+      },
+      {
+        id: 'lidocaina',
+        name: 'Lidocaína',
+        category: 'Anestésico Local (Amida)',
+        categoryBg: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+        cardGradient: 'from-amber-950 to-slate-900 border-amber-500/40',
+        icon: 'fa-syringe',
+        iconBg: 'bg-amber-500/20 text-amber-300',
+        mechanism: 'Bloqueador reversible de los canales de sodio (Na+) dependientes de voltaje en la membrana axonal, impidiendo la despolarización y la conducción del impulso nervioso.',
+        usage: 'Anestesia por infiltración local, bloqueos nerviosos periféricos, anestesia epidural/espinal y prevención del dolor a la inyección por propofol.',
+        pearl: 'Es extremadamente versátil: funciona como anestésico local, analgésico sistémico en infusión continua y como antiarrítmico Clase Ib para taquicardias ventriculares.'
+      },
+      {
+        id: 'midazolam',
+        name: 'Midazolam',
+        category: 'Benzodiacepina de Acción Corta',
+        categoryBg: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40',
+        cardGradient: 'from-indigo-950 to-slate-900 border-indigo-500/40',
+        icon: 'fa-pills',
+        iconBg: 'bg-indigo-500/20 text-indigo-300',
+        mechanism: 'Aumenta la frecuencia de apertura de los canales de cloro acoplados a receptores GABA_A, potenciando la inhibición neuronal central.',
+        usage: 'Premedicación anestésica ansiolítica, sedación consciente para procedimientos diagnósticos/intervencionistas e inducción de amnesia anterógrada.',
+        pearl: 'Genera una profunda amnesia anterógrada, lo que evita que el paciente recuerde momentos estresantes del entorno prequirúrgico.'
+      },
+      {
+        id: 'etomidato',
+        name: 'Etomidato',
+        category: 'Inductor Cardioestable',
+        categoryBg: 'bg-teal-500/20 text-teal-300 border-teal-500/40',
+        cardGradient: 'from-teal-950 to-slate-900 border-teal-500/40',
+        icon: 'fa-heart-pulse',
+        iconBg: 'bg-teal-500/20 text-teal-300',
+        mechanism: 'Modulador positivo directo de los receptores GABA_A con alta afinidad por la subunidad β2 y β3 del complejo receptor.',
+        usage: 'Inducción de anestesia general en pacientes con compromiso cardiovascular grave, hipotensión, choque o cardiopatías coronarias.',
+        pearl: 'Su mayor virtud es la extraordinaria estabilidad hemodinámica que ofrece (casi nula depresión miocárdica), aunque puede inhibir transitoriamente la 11-β-hidroxilasa adrenal.'
+      },
+      {
+        id: 'bupivacaina',
+        name: 'Bupivacaína',
+        category: 'Anestésico Local Prolongado',
+        categoryBg: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',
+        cardGradient: 'from-cyan-950 to-slate-900 border-cyan-500/40',
+        icon: 'fa-kit-medical',
+        iconBg: 'bg-cyan-500/20 text-cyan-300',
+        mechanism: 'Bloqueo prolongado de canales de sodio (Na+) dependientes de voltaje en neuronas sensitivas y motoras del sistema nervioso periférico y central.',
+        usage: 'Anestesia subaracnoidea (raquídea), anestesia epidural obstétrica y bloqueos de nervios periféricos para analgesia postoperatoria prolongada.',
+        pearl: 'Ofrece una duración de acción significativamente mayor que la lidocaína (hasta 4-8 horas en bloqueos), proporcionando un excelente confort analgésico posterior a la cirugía.'
+      }
+    ];
+
+    /* ==========================================
+       2. AUDIO SYNTHESIZER (WEB AUDIO API)
+    ========================================== */
+    class SoundManager {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      flip() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(260, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(520, this.ctx.currentTime + 0.08);
+
+        gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.08);
+      }
+
+      match() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = freq;
+
+          gain.gain.setValueAtTime(0.18, now + i * 0.07);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.28);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + i * 0.07);
+          osc.stop(now + i * 0.07 + 0.28);
+        });
+      }
+
+      mismatch() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(180, now);
+        osc.frequency.linearRampToValueAtTime(110, now + 0.16);
+
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.16);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.16);
+      }
+
+      victory() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime;
+        const notes = [
+          { f: 523.25, t: 0.0, d: 0.15 },
+          { f: 659.25, t: 0.12, d: 0.15 },
+          { f: 783.99, t: 0.24, d: 0.15 },
+          { f: 1046.50, t: 0.36, d: 0.45 }
+        ];
+
+        notes.forEach(n => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = n.f;
+
+          gain.gain.setValueAtTime(0.22, now + n.t);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + n.t + n.d);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + n.t);
+          osc.stop(now + n.t + n.d);
+        });
+      }
+    }
+
+    const sound = new SoundManager();
+
+    /* ==========================================
+       3. GAME STATE MANAGEMENT
+    ========================================== */
+    let cardsArray = [];
+    let flippedCards = [];
+    let matchedPairs = 0;
+    let totalMoves = 0;
+    let lockBoard = false;
+    let timerInterval = null;
+    let secondsElapsed = 0;
+    let gameStarted = false;
+
+    /* ==========================================
+       4. INITIALIZATION & BOARD SETUP
+    ========================================== */
+    function initGame() {
+      // Create 16 cards from 8 drug items
+      cardsArray = [];
+      ANESTHETIC_DRUGS.forEach(drug => {
+        // Pair 1
+        cardsArray.push({ ...drug, instanceId: drug.id + '_1' });
+        // Pair 2
+        cardsArray.push({ ...drug, instanceId: drug.id + '_2' });
+      });
+
+      // Shuffle Cards
+      shuffle(cardsArray);
+
+      // Reset state variables
+      flippedCards = [];
+      matchedPairs = 0;
+      totalMoves = 0;
+      lockBoard = false;
+      secondsElapsed = 0;
+      gameStarted = false;
+
+      clearInterval(timerInterval);
+      timerInterval = null;
+
+      // Update UI Counters
+      document.getElementById('matchedCount').textContent = '0';
+      document.getElementById('movesCount').textContent = '0';
+      document.getElementById('timerDisplay').textContent = '00:00';
+
+      // Render Grid
+      renderBoard();
+      populateFarmacopea();
+    }
+
+    // Fisher-Yates Shuffle Algorithm
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    // Render 4x4 Cards Grid
+    function renderBoard() {
+      const board = document.getElementById('gameBoard');
+      board.innerHTML = '';
+
+      cardsArray.forEach((card, index) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'perspective-1000 h-28 sm:h-36 md:h-40 cursor-pointer select-none';
+        cardEl.dataset.index = index;
+        cardEl.onclick = () => handleCardClick(index);
+
+        cardEl.innerHTML = `
+          <div id="cardInner_${index}" class="relative w-full h-full transition-transform duration-500 transform-style-3d rounded-2xl shadow-lg">
             
-            feedback.classList.remove('hidden');
-            
-            if (select.value === 'Pierna') {
-                feedback.innerHTML = '🦵 ¡A destruir esas piernas!';
-            } else if (select.value === 'Tren Superior') {
-                feedback.innerHTML = '🦍 ¡A mutar esos brazos y pecho!';
-            }
+            <!-- CARD BACK (HIDDEN FACE) -->
+            <div class="absolute inset-0 w-full h-full rounded-2xl backface-hidden bg-gradient-to-br from-slate-900 via-slate-850 to-teal-950 border border-teal-500/30 flex flex-col items-center justify-center gap-1 group hover:border-teal-400/60 transition-colors">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-slate-800/80 border border-teal-500/20 flex items-center justify-center text-teal-400 text-xl sm:text-2xl group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-stethoscope"></i>
+              </div>
+              <span class="text-[9px] sm:text-[11px] font-extrabold uppercase tracking-widest text-teal-400/70">Anestesia</span>
+            </div>
+
+            <!-- CARD FRONT (REVEALED FACE) -->
+            <div class="absolute inset-0 w-full h-full rounded-2xl backface-hidden rotate-y-180 bg-gradient-to-br ${card.cardGradient} p-2.5 sm:p-3 flex flex-col justify-between border shadow-xl">
+              
+              <!-- Category Tag -->
+              <div class="flex items-center justify-between">
+                <span class="text-[8px] sm:text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${card.categoryBg} truncate max-w-[85%]">
+                  ${card.category.split(' ')[0]}
+                </span>
+                <i class="fa-solid fa-sparkles text-teal-400 text-[10px]"></i>
+              </div>
+
+              <!-- Main Card Content -->
+              <div class="flex flex-col items-center justify-center text-center my-auto">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl ${card.iconBg} flex items-center justify-center text-base sm:text-xl mb-1 shadow-md">
+                  <i class="fa-solid ${card.icon}"></i>
+                </div>
+                <h3 class="text-xs sm:text-sm font-extrabold text-white leading-tight">${card.name}</h3>
+              </div>
+
+              <!-- Bottom Indicator -->
+              <div class="text-[8px] sm:text-[10px] text-slate-400 text-center font-medium">
+                Fármaco Anestésico
+              </div>
+
+            </div>
+
+          </div>
+        `;
+
+        board.appendChild(cardEl);
+      });
+    }
+
+    /* ==========================================
+       5. GAME LOGIC & CARD MATCHING
+    ========================================== */
+    function handleCardClick(index) {
+      if (lockBoard) return;
+      
+      const card = cardsArray[index];
+      const cardInner = document.getElementById(`cardInner_${index}`);
+
+      // Ignore if already flipped or matched
+      if (flippedCards.some(item => item.index === index)) return;
+      if (cardInner.classList.contains('rotate-y-180') && cardInner.dataset.matched === 'true') return;
+
+      // Start timer on first move
+      if (!gameStarted) {
+        startTimer();
+        gameStarted = true;
+      }
+
+      // Flip card
+      cardInner.classList.add('rotate-y-180');
+      sound.flip();
+
+      flippedCards.push({ index, card });
+
+      // Check for match when 2 cards are flipped
+      if (flippedCards.length === 2) {
+        lockBoard = true;
+        totalMoves++;
+        document.getElementById('movesCount').textContent = totalMoves;
+
+        const [card1, card2] = flippedCards;
+
+        if (card1.card.id === card2.card.id) {
+          // MATCH FOUND!
+          handleMatchSuccess(card1, card2);
+        } else {
+          // MISMATCH
+          handleMismatch(card1, card2);
+        }
+      }
+    }
+
+    function handleMatchSuccess(card1, card2) {
+      sound.match();
+      matchedPairs++;
+      document.getElementById('matchedCount').textContent = matchedPairs;
+
+      // Mark cards as matched
+      const inner1 = document.getElementById(`cardInner_${card1.index}`);
+      const inner2 = document.getElementById(`cardInner_${card2.index}`);
+      inner1.dataset.matched = 'true';
+      inner2.dataset.matched = 'true';
+
+      // Visual highlight animation on matched cards
+      inner1.classList.add('animate-pulse-glow');
+      inner2.classList.add('animate-pulse-glow');
+
+      flippedCards = [];
+
+      // Open detail modal for the matched drug after a slight delay
+      setTimeout(() => {
+        openDrugModal(card1.card);
+        lockBoard = false;
+
+        // Check if all 8 pairs are found
+        if (matchedPairs === ANESTHETIC_DRUGS.length) {
+          setTimeout(triggerVictory, 600);
+        }
+      }, 500);
+    }
+
+    function handleMismatch(card1, card2) {
+      sound.mismatch();
+
+      setTimeout(() => {
+        const inner1 = document.getElementById(`cardInner_${card1.index}`);
+        const inner2 = document.getElementById(`cardInner_${card2.index}`);
+        inner1.classList.remove('rotate-y-180');
+        inner2.classList.remove('rotate-y-180');
+
+        flippedCards = [];
+        lockBoard = false;
+      }, 950);
+    }
+
+    /* ==========================================
+       6. TIMER FUNCTIONS
+    ========================================== */
+    function startTimer() {
+      if (timerInterval) return;
+      secondsElapsed = 0;
+      timerInterval = setInterval(() => {
+        secondsElapsed++;
+        const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+        const secs = String(secondsElapsed % 60).padStart(2, '0');
+        document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    /* ==========================================
+       7. DRUG FACT MODAL
+    ========================================== */
+    function openDrugModal(drug) {
+      const modal = document.getElementById('drugModal');
+      
+      document.getElementById('modalDrugName').textContent = drug.name;
+      document.getElementById('modalDrugCategory').textContent = drug.category;
+      document.getElementById('modalDrugCategory').className = `inline-block text-xs font-semibold px-2.5 py-0.5 rounded-md mt-1 border ${drug.categoryBg}`;
+
+      const iconBox = document.getElementById('modalDrugIconBox');
+      iconBox.className = `w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex-shrink-0 flex items-center justify-center text-3xl sm:text-4xl shadow-xl ${drug.iconBg}`;
+      iconBox.innerHTML = `<i class="fa-solid ${drug.icon}"></i>`;
+
+      document.getElementById('modalDrugMechanism').textContent = drug.mechanism;
+      document.getElementById('modalDrugUsage').textContent = drug.usage;
+      document.getElementById('modalDrugPearl').textContent = drug.pearl;
+
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        modal.querySelector('.glass-modal').classList.remove('scale-95');
+      }, 20);
+    }
+
+    function closeDrugModal() {
+      const modal = document.getElementById('drugModal');
+      modal.querySelector('.glass-modal').classList.add('scale-95');
+      modal.classList.add('opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 300);
+    }
+
+    /* ==========================================
+       8. VICTORY CELEBRATION
+    ========================================== */
+    function triggerVictory() {
+      stopTimer();
+      sound.victory();
+
+      // Launch Confetti Wave
+      launchConfetti();
+
+      // Populate Victory Stats
+      const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+      const secs = String(secondsElapsed % 60).padStart(2, '0');
+      document.getElementById('finalTime').textContent = `${mins}:${secs}`;
+      document.getElementById('finalMoves').textContent = totalMoves;
+
+      // Accuracy formula: (Optimal 8 moves / Total Moves) * 100
+      const accuracy = Math.round((ANESTHETIC_DRUGS.length / Math.max(totalMoves, ANESTHETIC_DRUGS.length)) * 100);
+      document.getElementById('finalAccuracy').textContent = `${accuracy}%`;
+
+      // Show Victory Modal
+      const modal = document.getElementById('victoryModal');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        modal.querySelector('.glass-modal').classList.remove('scale-95');
+      }, 20);
+    }
+
+    function launchConfetti() {
+      if (typeof confetti === 'function') {
+        const count = 200;
+        const defaults = { origin: { y: 0.7 } };
+
+        function fire(particleRatio, opts) {
+          confetti(Object.assign({}, defaults, opts, {
+            particleCount: Math.floor(count * particleRatio)
+          }));
         }
 
-        // 2. Lógica dinámica del descanso
-        function handleRestChange() {
-            const select = document.getElementById('rest');
-            const feedback = document.getElementById('rest-feedback');
-            
-            feedback.classList.remove('hidden');
-            
-            if (select.value === 'Sí') {
-                feedback.className = 'font-bold italic pt-2 pl-2 fade-in text-neon-green';
-                feedback.innerHTML = '🔋 ¡Excelente, a romperla con toda la energía!';
-            } else if (select.value === 'No') {
-                feedback.className = 'font-bold italic pt-2 pl-2 fade-in text-yellow-400';
-                feedback.innerHTML = '⚠️ ¡Qué chimbo que no descansaste, ya más tarde te recuperas!';
-            }
-        }
+        fire(0.25, { spread: 26, startVelocity: 55, colors: ['#2dd4bf', '#06b6d4'] });
+        fire(0.2, { spread: 60, colors: ['#38bdf8', '#34d399'] });
+        fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+        fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, colors: ['#f472b6', '#fbbf24'] });
+        fire(0.1, { spread: 120, startVelocity: 45 });
+      }
+    }
 
-        // 3. Lógica Pregunta Médica
-        function checkAnswer(selected, buttonElement) {
-            const allButtons = document.querySelectorAll('.med-btn');
-            const feedbackBox = document.getElementById('med-feedback');
-            const hiddenInput = document.getElementById('med-answered');
-            
-            // Deshabilitar todos los botones para evitar múltiples respuestas
-            allButtons.forEach(btn => {
-                btn.disabled = true;
-                btn.classList.add('opacity-50', 'cursor-not-allowed');
-                btn.classList.remove('hover:bg-slate-800', 'hover:border-slate-400');
-            });
+    /* ==========================================
+       9. FARMACOPEA COMPENDIUM MODAL
+    ========================================== */
+    function populateFarmacopea() {
+      const container = document.getElementById('farmacopeaList');
+      container.innerHTML = '';
 
-            // Resaltar el botón clickeado quitándole la opacidad
-            buttonElement.classList.remove('opacity-50');
-            
-            // Validar respuesta
-            feedbackBox.classList.remove('hidden');
-            
-            if (selected === 'B') {
-                // Correcto
-                buttonElement.classList.remove('bg-slate-900/50', 'border-slate-600');
-                buttonElement.classList.add('bg-neon-green/20', 'border-neon-green', 'text-neon-green', 'shadow-[0_0_10px_rgba(57,255,20,0.3)]');
-                
-                feedbackBox.classList.add('bg-neon-green/10', 'border-neon-green/50', 'text-green-300');
-                feedbackBox.innerHTML = '<strong>¡CORRECTO! ✅</strong><br>La disociación albúmino-citológica (aumento de proteínas en el LCR sin aumento significativo de células) es el hallazgo clásico, reflejando inflamación de las raíces nerviosas sin una infección activa en el espacio subaracnoideo.';
-            } else {
-                // Incorrecto (A o C)
-                buttonElement.classList.remove('bg-slate-900/50', 'border-slate-600');
-                buttonElement.classList.add('bg-red-500/20', 'border-red-500', 'text-red-400', 'shadow-[0_0_10px_rgba(255,0,0,0.3)]');
-                
-                // Mostrar cuál era la correcta
-                allButtons[1].classList.remove('opacity-50');
-                allButtons[1].classList.add('border-neon-green/50', 'text-neon-green');
+      ANESTHETIC_DRUGS.forEach(drug => {
+        const card = document.createElement('div');
+        card.className = 'bg-slate-900/80 rounded-2xl p-4 border border-slate-800 hover:border-teal-500/30 transition-all';
+        card.innerHTML = `
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-10 h-10 rounded-xl ${drug.iconBg} flex items-center justify-center text-lg">
+              <i class="fa-solid ${drug.icon}"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-white text-base">${drug.name}</h3>
+              <span class="text-[10px] font-semibold px-2 py-0.5 rounded border ${drug.categoryBg}">${drug.category}</span>
+            </div>
+          </div>
+          <div class="space-y-1.5 text-xs text-slate-300 mt-2">
+            <p><strong class="text-teal-400">Mecanismo:</strong> ${drug.mechanism}</p>
+            <p><strong class="text-cyan-400">Uso Anestésico:</strong> ${drug.usage}</p>
+            <p class="text-amber-200/90 italic pt-1"><i class="fa-solid fa-star text-amber-400 mr-1 text-[10px]"></i> ${drug.pearl}</p>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
 
-                feedbackBox.classList.add('bg-red-500/10', 'border-red-500/50', 'text-red-200');
-                
-                if (selected === 'A') {
-                    feedbackBox.innerHTML = '<strong>¡INCORRECTO! ❌</strong><br>La pleocitosis (aumento de células) sugiere etiologías infecciosas (como meningitis). En Guillain-Barré el recuento celular suele ser normal.<br><br><em>Respuesta correcta: B) Disociación albúmino-citológica.</em>';
-                } else if (selected === 'C') {
-                    feedbackBox.innerHTML = '<strong>¡INCORRECTO! ❌</strong><br>La hipoglucorraquia (glucosa baja) se ve típicamente en meningitis bacteriana o fúngica, no en Guillain-Barré (donde la glucosa es normal).<br><br><em>Respuesta correcta: B) Disociación albúmino-citológica.</em>';
-                }
-            }
+    function openFarmacopeaModal() {
+      const modal = document.getElementById('farmacopeaModal');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        modal.querySelector('.glass-modal').classList.remove('scale-95');
+      }, 20);
+    }
 
-            // Marcar como respondida para permitir el submit
-            hiddenInput.value = "answered";
-        }
+    function closeFarmacopeaModal() {
+      const modal = document.getElementById('farmacopeaModal');
+      modal.querySelector('.glass-modal').classList.add('scale-95');
+      modal.classList.add('opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 300);
+    }
 
-        // 4. Lógica de Envío y Modal
-        function handleFormSubmit(event) {
-            event.preventDefault();
+    /* ==========================================
+       10. UTILITIES & RESTART
+    ========================================== */
+    function toggleSound() {
+      sound.muted = !sound.muted;
+      const soundIcon = document.getElementById('soundIcon');
+      if (sound.muted) {
+        soundIcon.className = 'fa-solid fa-volume-xmark text-rose-400';
+      } else {
+        soundIcon.className = 'fa-solid fa-volume-high text-teal-400';
+      }
+    }
 
-            const hiddenMedInput = document.getElementById('med-answered').value;
-            if (!hiddenMedInput) {
-                alert("¡Doctor Eiverth, debe responder la pregunta médica antes de continuar!");
-                return;
-            }
+    function restartGame() {
+      // Close all modals
+      closeDrugModal();
+      
+      const vModal = document.getElementById('victoryModal');
+      vModal.querySelector('.glass-modal').classList.add('scale-95');
+      vModal.classList.add('opacity-0');
+      setTimeout(() => {
+        vModal.classList.add('hidden');
+      }, 300);
 
-            const timeInput = document.getElementById('workout-time').value;
-            
-            // Formatear hora a AM/PM
-            const [hours, minutes] = timeInput.split(':');
-            const date = new Date();
-            date.setHours(parseInt(hours, 10));
-            date.setMinutes(parseInt(minutes, 10));
-            
-            const formattedTime = date.toLocaleTimeString('es-ES', { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: true 
-            }).toUpperCase();
+      closeFarmacopeaModal();
 
-            // Mostrar en el modal
-            document.getElementById('display-time').textContent = formattedTime;
-            
-            const modal = document.getElementById('success-modal');
-            const modalContent = document.getElementById('modal-content');
-            
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            
-            // Trigger animaciones
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modal.classList.add('opacity-100');
-                modalContent.classList.remove('scale-95');
-                modalContent.classList.add('scale-100');
-            }, 10);
-        }
+      // Re-initialize Game
+      initGame();
+    }
 
-        function closeModal() {
-            const modal = document.getElementById('success-modal');
-            const modalContent = document.getElementById('modal-content');
-            
-            modal.classList.remove('opacity-100');
-            modal.classList.add('opacity-0');
-            modalContent.classList.remove('scale-100');
-            modalContent.classList.add('scale-95');
-            
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }, 500);
-        }
-    </script>
+    // Initialize Game on Window Load
+    window.onload = () => {
+      initGame();
+    };
+  </script>
+
 </body>
 </html>
